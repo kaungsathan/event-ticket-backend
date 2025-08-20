@@ -13,11 +13,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Run the permission seeder first
+        $this->call(PermissionSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create test users with different roles
+        User::factory()->superAdmin()->create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@example.com',
         ]);
+
+        User::factory()->admin()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+        ]);
+
+        User::factory()->eventManager()->create([
+            'name' => 'Event Manager',
+            'email' => 'eventmanager@example.com',
+        ]);
+
+        User::factory()->customerService()->create([
+            'name' => 'Customer Service',
+            'email' => 'support@example.com',
+        ]);
+
+        User::factory()->customer()->create([
+            'name' => 'Customer User',
+            'email' => 'customer@example.com',
+        ]);
+
+        // Create additional test users
+        User::factory(5)->customer()->create();
     }
 }

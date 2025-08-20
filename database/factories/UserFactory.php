@@ -26,6 +26,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'phone' => fake()->unique()->phoneNumber(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -40,5 +41,75 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Create a user with super admin role.
+     */
+    public function superAdmin(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('super-admin');
+        });
+    }
+
+    /**
+     * Create a user with admin role.
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('admin');
+        });
+    }
+
+    /**
+     * Create a user with event manager role.
+     */
+    public function eventManager(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('event-manager');
+        });
+    }
+
+    /**
+     * Create a user with customer service role.
+     */
+    public function customerService(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('customer-service');
+        });
+    }
+
+    /**
+     * Create a user with customer role.
+     */
+    public function customer(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('customer');
+        });
+    }
+
+    /**
+     * Create a user with specific role.
+     */
+    public function withRole(string $role): static
+    {
+        return $this->afterCreating(function ($user) use ($role) {
+            $user->assignRole($role);
+        });
+    }
+
+    /**
+     * Create a user with specific permissions.
+     */
+    public function withPermissions(array $permissions): static
+    {
+        return $this->afterCreating(function ($user) use ($permissions) {
+            $user->givePermissionTo($permissions);
+        });
     }
 }
