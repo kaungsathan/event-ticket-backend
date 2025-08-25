@@ -63,14 +63,6 @@ trait HasRoleScopes
     }
 
     /**
-     * Scope to get users who can view reports.
-     */
-    public function scopeCanViewReports(Builder $query): Builder
-    {
-        return $query->permission(['view reports', 'export reports']);
-    }
-
-    /**
      * Scope to get users excluding specific roles.
      */
     public function scopeExcludingRoles(Builder $query, array $roles): Builder

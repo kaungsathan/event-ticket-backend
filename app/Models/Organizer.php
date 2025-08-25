@@ -5,33 +5,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class Event extends Model
+class Organizer extends Model
 {
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'title',
+        'name',
         'description',
-        'start_date',
-        'end_date',
-        'location',
-        'price',
-        'max_attendees',
-        'is_published',
+        'email',
+        'phone',
+        'website',
+        'address',
+        'logo_url',
+        'is_verified',
+        'is_active',
         'created_by',
-        'organizer_id',
     ];
 
     protected function casts(): array
     {
         return [
-            'start_date' => 'datetime',
-            'end_date' => 'datetime',
-            'price' => 'decimal:2',
-            'is_published' => 'boolean',
+            'is_verified' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -41,13 +40,13 @@ class Event extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'description', 'start_date', 'end_date', 'location', 'price', 'max_attendees', 'is_published', 'organizer_id'])
+            ->logOnly(['name', 'description', 'email', 'phone', 'website', 'address', 'is_verified', 'is_active'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 
     /**
-     * Get the user that created the event.
+     * Get the user that created the organizer.
      */
     public function creator(): BelongsTo
     {
@@ -55,18 +54,10 @@ class Event extends Model
     }
 
     /**
-     * Get the organizer of this event.
+     * Get the events organized by this organizer.
      */
-    public function organizer(): BelongsTo
+    public function events(): HasMany
     {
-        return $this->belongsTo(Organizer::class);
-    }
-
-    /**
-     * Get the orders for this event.
-     */
-    public function orders()
-    {
-        return $this->hasMany(\App\Models\Order::class);
+        return $this->hasMany(Event::class);
     }
 }

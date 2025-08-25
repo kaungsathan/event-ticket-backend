@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+use App\Domains\Auth\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // Public auth routes

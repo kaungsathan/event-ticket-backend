@@ -7,6 +7,9 @@ use App\Models\Event;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class OrderService
 {
@@ -41,6 +44,32 @@ class OrderService
                 'notes' => $data['notes'] ?? null,
             ]);
         });
+    }
+
+    /**
+     * Get paginated orders with filtering and sorting.
+     */
+    public function getOrders(User $user, array $params = []): LengthAwarePaginator
+    {
+        $query = Order::query();
+
+        // Non-staff users can only see their own orders
+        if (!$user->can('view orders')) {
+            $query->where('user_id', $user->id);
+        }
+
+        return QueryBuilder::for($query)
+            ->allowedFilters([
+                'status',
+                'payment_status',
+                'customer_email',
+                AllowedFilter::exact('user_id'),
+                AllowedFilter::exact('event_id'),
+            ])
+            ->allowedSorts(['created_at', 'total_amount', 'order_number'])
+            ->allowedIncludes(['user', 'event'])
+            ->defaultSort('-created_at')
+            ->paginate($params['per_page'] ?? 15);
     }
 
     /**
@@ -88,8 +117,11 @@ class OrderService
 
         $order->confirm();
 
-        // Trigger order confirmed event
-        event(new \App\Domains\Orders\Events\OrderConfirmed($order));
+        // Log activity for order confirmation - TEMPORARILY DISABLED
+        // activity()
+        //     ->performedOn($order)
+        //     ->causedBy(auth()->user())
+        //     ->log('Order confirmed');
 
         return $order;
     }
@@ -105,8 +137,12 @@ class OrderService
 
         $order->cancel($reason);
 
-        // Trigger order cancelled event
-        event(new \App\Domains\Orders\Events\OrderCancelled($order));
+        // Log activity for order cancellation - TEMPORARILY DISABLED
+        // activity()
+        //     ->performedOn($order)
+        //     ->causedBy(auth()->user())
+        //     ->withProperties(['reason' => $reason])
+        //     ->log('Order cancelled');
 
         return $order;
     }
@@ -135,5 +171,51 @@ class OrderService
             'paid_orders' => $query->where('payment_status', 'paid')->count(),
             'refunded_amount' => $query->sum('refunded_amount'),
         ];
+    }
+
+    /**
+     * Process refund for an order.
+     */
+    public function processRefund(Order $order, float $amount, string $reason, User $user): Order
+    {
+        if (!$order->canBeRefunded()) {
+            throw new \InvalidArgumentException('This order cannot be refunded.');
+        }
+
+        $order->processRefund($amount, $reason);
+
+        // Log activity - TEMPORARILY DISABLED
+        // activity()
+        //     ->performedOn($order)
+        //     ->causedBy($user)
+        //     ->withProperties([
+        //         'amount' => $amount,
+        //         'reason' => $reason,
+        //     ])
+        //     ->log('Order refund processed');
+
+        return $order;
+    }
+
+    /**
+     * Get a single order with relationships.
+     */
+    public function getOrderWithRelations(Order $order): Order
+    {
+        return $order->load(['user', 'event']);
+    }
+
+    /**
+     * Delete an order.
+     */
+    public function deleteOrder(Order $order, User $user): void
+    {
+        // Log activity before deletion - TEMPORARILY DISABLED
+        // activity()
+        //     ->performedOn($order)
+        //     ->causedBy($user)
+        //     ->log('Order deleted');
+
+        $order->delete();
     }
 }

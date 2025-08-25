@@ -42,7 +42,6 @@ class PermissionSeeder extends Seeder
             'create tickets',
             'edit tickets',
             'delete tickets',
-            'validate tickets',
 
             // Order Management
             'view orders',
@@ -51,9 +50,11 @@ class PermissionSeeder extends Seeder
             'delete orders',
             'refund orders',
 
-            // Report Management
-            'view reports',
-            'export reports',
+            // Organizer Management
+            'view organizers',
+            'create organizers',
+            'edit organizers',
+            'delete organizers',
 
             // Settings
             'manage settings',
@@ -71,26 +72,27 @@ class PermissionSeeder extends Seeder
         $adminRole->givePermissionTo([
             'view users', 'create users', 'edit users',
             'view roles', 'create roles', 'edit roles',
-            'view events', 'create events', 'edit events', 'publish events',
-            'view tickets', 'create tickets', 'edit tickets', 'validate tickets',
+            'view events', 'create events', 'edit events',
+            'view tickets', 'create tickets', 'edit tickets',
             'view orders', 'create orders', 'edit orders', 'refund orders',
-            'view reports', 'export reports',
+            'view organizers', 'create organizers', 'edit organizers', 'delete organizers',
         ]);
 
         $eventManagerRole = Role::create(['name' => 'event-manager']);
         $eventManagerRole->givePermissionTo([
-            'view events', 'create events', 'edit events', 'publish events',
+            'view events', 'create events', 'edit events',
             'view tickets', 'create tickets', 'edit tickets',
             'view orders', 'edit orders',
-            'view reports',
+            'view organizers', 'create organizers',
         ]);
 
         $customerServiceRole = Role::create(['name' => 'customer-service']);
         $customerServiceRole->givePermissionTo([
             'view users', 'edit users',
             'view events',
-            'view tickets', 'validate tickets',
+            'view tickets',
             'view orders', 'edit orders', 'refund orders',
+            'view organizers',
         ]);
 
         $customerRole = Role::create(['name' => 'customer']);

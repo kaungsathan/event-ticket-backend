@@ -108,8 +108,8 @@ class EventController extends Controller
 
 // routes/api.php
 
-use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\Api\RoleController;
+use App\Domains\Events\Controllers\EventController;
+use App\Domains\Users\Controllers\RoleController;
 
 // Public routes
 Route::get('/events', [EventController::class, 'index']);

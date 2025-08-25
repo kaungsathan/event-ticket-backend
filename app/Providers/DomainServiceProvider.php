@@ -8,19 +8,6 @@ use Illuminate\Support\Facades\Route;
 class DomainServiceProvider extends ServiceProvider
 {
     /**
-     * Add new domains here when you create them.
-     */
-    protected array $domains = [
-        'Auth',
-        'Events',
-        'Orders',
-        'Users',
-        // 'Tickets',
-        // 'Analytics',
-        // 'Notifications',
-    ];
-
-    /**
      * Register services.
      */
     public function register(): void
@@ -38,11 +25,13 @@ class DomainServiceProvider extends ServiceProvider
 
     protected function loadDomainRoutes(): void
     {
-        foreach ($this->domains as $domain) {
+        $domains = config('domains.domains', []);
+
+        foreach ($domains as $domain) {
             $routeFile = app_path("Domains/{$domain}/Routes/" . strtolower($domain) . '.php');
 
             if (file_exists($routeFile)) {
-                Route::middleware('api')
+                Route::middleware(['api'])
                     ->prefix('api')
                     ->group($routeFile);
             }

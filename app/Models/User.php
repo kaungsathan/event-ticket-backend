@@ -16,7 +16,7 @@ use App\Traits\HasRoleScopes;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, LogsActivity, HasPermissionHelpers, HasRoleScopes;
+    use HasFactory, Notifiable, HasApiTokens, LogsActivity, HasRoleScopes, HasRoles { HasPermissionHelpers::getDirectPermissions insteadof HasRoles; } use HasPermissionHelpers;
 
     /**
      * The attributes that are mass assignable.
@@ -50,6 +50,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the customer profile for the user.
+     */
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
     }
 
     /**

@@ -9,34 +9,6 @@ use Illuminate\Support\Collection;
 trait HasPermissionHelpers
 {
     /**
-     * Check if the user has any of the given roles.
-     */
-    public function hasAnyRole(array $roles): bool
-    {
-        foreach ($roles as $role) {
-            if ($this->hasRole($role)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the user has all of the given roles.
-     */
-    public function hasAllRoles(array $roles): bool
-    {
-        foreach ($roles as $role) {
-            if (!$this->hasRole($role)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Check if user is a super admin.
      */
     public function isSuperAdmin(): bool
@@ -89,7 +61,7 @@ trait HasPermissionHelpers
      */
     public function canManageEvents(): bool
     {
-        return $this->hasAnyPermission(['view events', 'create events', 'edit events', 'delete events', 'publish events']);
+        return $this->hasAnyPermission(['view events', 'create events', 'edit events', 'delete events']);
     }
 
     /**
@@ -97,7 +69,7 @@ trait HasPermissionHelpers
      */
     public function canManageTickets(): bool
     {
-        return $this->hasAnyPermission(['view tickets', 'create tickets', 'edit tickets', 'delete tickets', 'validate tickets']);
+        return $this->hasAnyPermission(['view tickets', 'create tickets', 'edit tickets', 'delete tickets']);
     }
 
     /**
@@ -109,25 +81,17 @@ trait HasPermissionHelpers
     }
 
     /**
-     * Check if user can view reports.
+     * Check if user can manage organizers.
      */
-    public function canViewReports(): bool
+    public function canManageOrganizers(): bool
     {
-        return $this->hasAnyPermission(['view reports', 'export reports']);
-    }
-
-    /**
-     * Get user's role names as array.
-     */
-    public function getRoleNames(): array
-    {
-        return $this->roles->pluck('name')->toArray();
+        return $this->hasAnyPermission(['view organizers', 'create organizers', 'edit organizers', 'delete organizers']);
     }
 
     /**
      * Get user's permission names as array.
      */
-    public function getPermissionNames(): array
+    public function getAllPermissionNames(): array
     {
         return $this->getAllPermissions()->pluck('name')->toArray();
     }
@@ -137,7 +101,7 @@ trait HasPermissionHelpers
      */
     public function getPermissionsByCategory(): array
     {
-        $permissions = $this->getAllPermissions()->pluck('name');
+        $permissions = $this->getAllPermissionNames()->pluck('name');
         $categorized = [];
 
         foreach ($permissions as $permission) {
@@ -164,7 +128,7 @@ trait HasPermissionHelpers
             'customer' => 1,
         ];
 
-        $userRoles = $this->getRoleNames();
+        $userRoles = $this->roles->pluck('name')->toArray();
         $highestPriority = 0;
         $primaryRole = null;
 

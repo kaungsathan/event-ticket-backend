@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Domains\Users\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\RolePermissionService;

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\EventController;
+use App\Domains\Events\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 
 // Public events routes (for browsing without authentication)
