@@ -2,42 +2,39 @@
 
 namespace App\Domains\Organizers\Services;
 
-use App\Models\Organizer;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Event;
+use App\Models\Organizer;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\AllowedSort;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrganizerService
 {
     /**
      * Get paginated organizers with filtering and sorting.
      */
-    public function getOrganizers(array $params = []): LengthAwarePaginator
+    public function getOrganizerList(array $params = []): LengthAwarePaginator
     {
-        return QueryBuilder::for(Organizer::class)
-            ->allowedFilters([
-                'name',
-                'email',
-                'is_verified',
-                'is_active',
-                AllowedFilter::exact('created_by'),
-                AllowedFilter::partial('name'),
-                AllowedFilter::partial('email'),
-            ])
-            ->allowedSorts([
-                'name',
-                'email',
-                'created_at',
-                'is_verified',
-                'is_active',
-                AllowedSort::field('creator_name', 'users.name'),
-            ])
-            ->allowedIncludes(['creator', 'events'])
-            ->defaultSort('-created_at')
-            ->paginate($params['per_page'] ?? 15);
+        $perPage = $params['per_page'] ?? 10;
+        $page = $params['page'] ?? 1;
+        $search = $params['search'] ?? null;
+        $status = $params['status'] ?? null;
+        $query = Organizer::query()
+                ->when($status, fn ($query) => $query->where('status', $status));
+
+        if($search)
+        {
+            $query->where('company_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('company_phone', 'like', "%{$search}%");
+        }
+
+        $query->orderBy('created_at', 'desc');
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
@@ -48,7 +45,7 @@ class OrganizerService
         $organizer = Organizer::create([
             ...$organizerData,
             'created_by' => $user->id,
-            'is_verified' => false, // New organizers start unverified
+            'is_verified' => true,
         ]);
 
         // Log activity - TEMPORARILY DISABLED
@@ -63,18 +60,17 @@ class OrganizerService
     /**
      * Get a single organizer with optional includes.
      */
-    public function getOrganizer(Organizer $organizer, array $includes = ['creator', 'events']): Organizer
+    public function getOrganizer(int $id)
     {
-        return QueryBuilder::for(Organizer::where('id', $organizer->id))
-            ->allowedIncludes($includes)
-            ->first();
+        return Organizer::findOrFail($id);
     }
 
     /**
      * Update an organizer.
      */
-    public function updateOrganizer(Organizer $organizer, array $organizerData, User $user): Organizer
+    public function updateOrganizer(int $id, array $organizerData, User $user): Organizer
     {
+        $organizer = Organizer::findOrFail($id);
         $organizer->update($organizerData);
 
         // Log activity - TEMPORARILY DISABLED
@@ -89,10 +85,10 @@ class OrganizerService
     /**
      * Delete an organizer.
      */
-    public function deleteOrganizer(Organizer $organizer, User $user): void
+    public function deleteOrganizer(int $id, User $user): void
     {
         // Check if organizer has events
-        if (!$this->canDeleteOrganizer($organizer)) {
+        if (!$this->canDeleteOrganizer($id)) {
             throw new \InvalidArgumentException('Cannot delete organizer with existing events');
         }
 
@@ -102,7 +98,7 @@ class OrganizerService
         //     ->causedBy($user)
         //     ->log('Organizer deleted');
 
-        $organizer->delete();
+        Organizer::findOrFail($id)->delete();
     }
 
     /**
@@ -296,9 +292,9 @@ class OrganizerService
     /**
      * Check if organizer can be deleted.
      */
-    public function canDeleteOrganizer(Organizer $organizer): bool
+    public function canDeleteOrganizer(int $id): bool
     {
-        return $organizer->events()->count() === 0;
+        return Event::where('organizer_id', $id)->count() === 0;
     }
 
     /**

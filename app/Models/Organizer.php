@@ -14,23 +14,23 @@ class Organizer extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'name',
+        'company_name',
         'description',
         'email',
-        'phone',
+        'company_phone',
+        'company_address',
         'website',
         'address',
         'logo_url',
-        'is_verified',
-        'is_active',
+        'date',
+        'status',
         'created_by',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_verified' => 'boolean',
-            'is_active' => 'boolean',
+            'date' => 'datetime',
         ];
     }
 
@@ -40,7 +40,7 @@ class Organizer extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'description', 'email', 'phone', 'website', 'address', 'is_verified', 'is_active'])
+            ->logOnly(['company_name', 'description', 'email', 'company_phone', 'website', 'address', 'date', 'status'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }

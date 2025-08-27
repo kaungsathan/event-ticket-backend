@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('organizers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('company_name');
             $table->text('description')->nullable();
             $table->string('email')->unique();
-            $table->string('phone')->nullable();
+            $table->string('company_phone')->nullable();
             $table->string('website')->nullable();
             $table->text('address')->nullable();
             $table->string('logo_url')->nullable();
+            $table->dateTime('date')->nullable();
             $table->boolean('is_verified')->default(false);
-            $table->boolean('is_active')->default(true);
+            $table->string('status')->default('active');
             $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });

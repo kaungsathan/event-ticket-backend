@@ -26,13 +26,14 @@ class UserService
         // Search functionality
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'LIKE', "%{$search}%")
+                $q->where('username', 'LIKE', "%{$search}%")
+                  ->orWhere('full_name', 'LIKE', "%{$search}%")
                   ->orWhere('email', 'LIKE', "%{$search}%");
             });
         }
 
         // Sorting
-        $allowedSortFields = ['id', 'name', 'email', 'created_at', 'updated_at'];
+        $allowedSortFields = ['id', 'username', 'email', 'created_at', 'updated_at'];
         $allowedSortDirections = ['asc', 'desc'];
 
         if (in_array($sortBy, $allowedSortFields) && in_array(strtolower($sortDirection), $allowedSortDirections)) {

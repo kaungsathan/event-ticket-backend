@@ -12,7 +12,7 @@ class OrganizerPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view organizers');
+        return $user->can('view-organizers');
     }
 
     /**
@@ -20,7 +20,7 @@ class OrganizerPolicy
      */
     public function view(User $user, Organizer $organizer): bool
     {
-        return $user->can('view organizers') || $organizer->created_by === $user->id;
+        return $user->can('view-organizers') || $organizer->created_by === $user->id;
     }
 
     /**
@@ -28,7 +28,7 @@ class OrganizerPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create organizers');
+        return $user->can('create-organizers');
     }
 
     /**
@@ -36,8 +36,8 @@ class OrganizerPolicy
      */
     public function update(User $user, Organizer $organizer): bool
     {
-        return $user->can('edit organizers') ||
-               ($user->can('edit own organizers') && $organizer->created_by === $user->id);
+        return $user->can('edit-organizers') ||
+               ($user->can('edit-own-organizers') && $organizer->created_by === $user->id);
     }
 
     /**
@@ -45,8 +45,8 @@ class OrganizerPolicy
      */
     public function delete(User $user, Organizer $organizer): bool
     {
-        return $user->can('delete organizers') ||
-               ($user->can('delete own organizers') && $organizer->created_by === $user->id);
+        return $user->can('delete-organizers') ||
+               ($user->can('delete-own-organizers') && $organizer->created_by === $user->id);
     }
 
     /**
@@ -54,7 +54,7 @@ class OrganizerPolicy
      */
     public function verify(User $user, Organizer $organizer): bool
     {
-        return $user->can('verify organizers');
+        return $user->can('verify-organizers');
     }
 
     /**
@@ -62,8 +62,8 @@ class OrganizerPolicy
      */
     public function toggleStatus(User $user, Organizer $organizer): bool
     {
-        return $user->can('manage organizer status') ||
-               ($user->can('manage own organizer status') && $organizer->created_by === $user->id);
+        return $user->can('manage-organizer-status') ||
+               ($user->can('manage-own-organizer-status') && $organizer->created_by === $user->id);
     }
 
     /**
@@ -71,7 +71,7 @@ class OrganizerPolicy
      */
     public function restore(User $user, Organizer $organizer): bool
     {
-        return $user->can('delete organizers');
+        return $user->can('delete-organizers');
     }
 
     /**
@@ -79,6 +79,6 @@ class OrganizerPolicy
      */
     public function forceDelete(User $user, Organizer $organizer): bool
     {
-        return $user->can('delete organizers');
+        return $user->can('delete-organizers');
     }
 }
