@@ -2,8 +2,7 @@
 
 namespace App\Traits;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 trait HasPermissionHelpers
@@ -53,7 +52,7 @@ trait HasPermissionHelpers
      */
     public function canManageUsers(): bool
     {
-        return $this->hasAnyPermission(['view users', 'create users', 'edit users', 'delete users']);
+        return $this->hasAnyPermission(['view-users', 'create-users', 'edit-users', 'delete-users']);
     }
 
     /**
@@ -61,7 +60,7 @@ trait HasPermissionHelpers
      */
     public function canManageEvents(): bool
     {
-        return $this->hasAnyPermission(['view events', 'create events', 'edit events', 'delete events']);
+        return $this->hasAnyPermission(['view-events', 'create-events', 'edit-events', 'delete-events']);
     }
 
     /**
@@ -69,7 +68,7 @@ trait HasPermissionHelpers
      */
     public function canManageTickets(): bool
     {
-        return $this->hasAnyPermission(['view tickets', 'create tickets', 'edit tickets', 'delete tickets']);
+        return $this->hasAnyPermission(['view-tickets', 'create-tickets', 'edit-tickets', 'delete-tickets']);
     }
 
     /**
@@ -77,7 +76,7 @@ trait HasPermissionHelpers
      */
     public function canManageOrders(): bool
     {
-        return $this->hasAnyPermission(['view orders', 'create orders', 'edit orders', 'delete orders', 'refund orders']);
+        return $this->hasAnyPermission(['view-orders', 'create-orders', 'edit-orders', 'delete-orders', 'refund-orders']);
     }
 
     /**
@@ -85,7 +84,7 @@ trait HasPermissionHelpers
      */
     public function canManageOrganizers(): bool
     {
-        return $this->hasAnyPermission(['view organizers', 'create organizers', 'edit organizers', 'delete organizers']);
+        return $this->hasAnyPermission(['view-organizers', 'create-organizers', 'edit-organizers', 'delete-organizers']);
     }
 
     /**
@@ -96,16 +95,41 @@ trait HasPermissionHelpers
         return $this->getAllPermissions()->pluck('name')->toArray();
     }
 
+    public function extractPermissionName(string $permission, string $divider = '-')
+    {
+        return [
+            'name' => Str::title(Str::replace($divider, ' ', $permission)),
+            'action' => Str::before($permission, $divider),
+            'subject' => Str::after($permission, $divider),
+            'route_name' => Str::singular(Str::after($permission, $divider)) == 'dashboard' ? '/' : '/' . Str::singular(Str::after($permission, $divider)),
+        ];
+    }
+
+    /**
+     * Get user's permissions as formatted object array.
+     */
+    public function getFormattedPermissions(): array
+    {
+        $permissions = $this->getAllPermissionNames();
+        $formattedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            $formattedPermissions[] = $this->extractPermissionName($permission);
+        }
+
+        return $formattedPermissions;
+    }
+
     /**
      * Get user's permissions grouped by category.
      */
     public function getPermissionsByCategory(): array
     {
-        $permissions = $this->getAllPermissionNames()->pluck('name');
+        $permissions = $this->getAllPermissionNames();
         $categorized = [];
 
         foreach ($permissions as $permission) {
-            $parts = explode(' ', $permission);
+            $parts = explode('-', $permission);
             $action = $parts[0] ?? 'other';
             $category = $parts[1] ?? 'general';
 
@@ -148,7 +172,7 @@ trait HasPermissionHelpers
      */
     public function canPerformAction(string $action, string $model): bool
     {
-        $permission = $action . ' ' . strtolower($model);
+        $permission = $action . '-' . strtolower($model);
         return $this->can($permission);
     }
 
@@ -162,7 +186,7 @@ trait HasPermissionHelpers
         $modelLower = strtolower($model);
 
         foreach ($actions as $action) {
-            $permission = $action . ' ' . $modelLower;
+            $permission = $action . '-' . $modelLower;
             if ($this->can($permission)) {
                 $availableActions[] = $action;
             }
@@ -195,6 +219,14 @@ trait HasPermissionHelpers
         ];
 
         return $displayNames[$primaryRole] ?? 'Unknown';
+    }
+
+    /**
+     * Check if user can view reports.
+     */
+    public function canViewReports(): bool
+    {
+        return $this->hasAnyRole(['super-admin', 'admin', 'event-manager']);
     }
 
     /**

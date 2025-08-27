@@ -19,45 +19,45 @@ class PermissionSeeder extends Seeder
         // Create permissions for Event Ticket System
         $permissions = [
             // User Management
-            'view users',
-            'create users',
-            'edit users',
-            'delete users',
+            'view-users',
+            'create-users',
+            'edit-users',
+            'delete-users',
 
             // Role Management
-            'view roles',
-            'create roles',
-            'edit roles',
-            'delete roles',
+            'view-roles',
+            'create-roles',
+            'edit-roles',
+            'delete-roles',
 
             // Event Management
-            'view events',
-            'create events',
-            'edit events',
-            'delete events',
-            'publish events',
+            'view-events',
+            'create-events',
+            'edit-events',
+            'delete-events',
+            'publish-events',
 
             // Ticket Management
-            'view tickets',
-            'create tickets',
-            'edit tickets',
-            'delete tickets',
+            'view-tickets',
+            'create-tickets',
+            'edit-tickets',
+            'delete-tickets',
 
             // Order Management
-            'view orders',
-            'create orders',
-            'edit orders',
-            'delete orders',
-            'refund orders',
+            'view-orders',
+            'create-orders',
+            'edit-orders',
+            'delete-orders',
+            'refund-orders',
 
             // Organizer Management
-            'view organizers',
-            'create organizers',
-            'edit organizers',
-            'delete organizers',
+            'view-organizers',
+            'create-organizers',
+            'edit-organizers',
+            'delete-organizers',
 
             // Settings
-            'manage settings',
+            'manage-settings',
         ];
 
         foreach ($permissions as $permission) {
@@ -70,35 +70,35 @@ class PermissionSeeder extends Seeder
 
         $adminRole = Role::create(['name' => 'admin']);
         $adminRole->givePermissionTo([
-            'view users', 'create users', 'edit users',
-            'view roles', 'create roles', 'edit roles',
-            'view events', 'create events', 'edit events',
-            'view tickets', 'create tickets', 'edit tickets',
-            'view orders', 'create orders', 'edit orders', 'refund orders',
-            'view organizers', 'create organizers', 'edit organizers', 'delete organizers',
+            'view-users', 'create-users', 'edit-users',
+            'view-roles', 'create-roles', 'edit-roles',
+            'view-events', 'create-events', 'edit-events',
+            'view-tickets', 'create-tickets', 'edit-tickets',
+            'view-orders', 'create-orders', 'edit-orders', 'refund-orders',
+            'view-organizers', 'create-organizers', 'edit-organizers', 'delete-organizers',
         ]);
 
         $eventManagerRole = Role::create(['name' => 'event-manager']);
         $eventManagerRole->givePermissionTo([
-            'view events', 'create events', 'edit events',
-            'view tickets', 'create tickets', 'edit tickets',
-            'view orders', 'edit orders',
-            'view organizers', 'create organizers',
+            'view-events', 'create-events', 'edit-events',
+            'view-tickets', 'create-tickets', 'edit-tickets',
+            'view-orders', 'edit-orders',
+            'view-organizers', 'create-organizers',
         ]);
 
         $customerServiceRole = Role::create(['name' => 'customer-service']);
         $customerServiceRole->givePermissionTo([
-            'view users', 'edit users',
-            'view events',
-            'view tickets',
-            'view orders', 'edit orders', 'refund orders',
-            'view organizers',
+            'view-users', 'edit-users',
+            'view-events',
+            'view-tickets',
+            'view-orders', 'edit-orders', 'refund-orders',
+            'view-organizers',
         ]);
 
         $customerRole = Role::create(['name' => 'customer']);
         $customerRole->givePermissionTo([
-            'view events',
-            'create orders',
+            'view-events',
+            'create-orders',
         ]);
 
         $this->command->info('Permissions and roles created successfully!');

@@ -1,8 +1,9 @@
 <?php
 
-use App\Domains\Users\Controllers\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Domains\Users\Controllers\RoleController;
+use App\Domains\Users\Controllers\UserController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -31,5 +32,13 @@ Route::middleware('auth:sanctum')->group(function () {
                 ]
             ]);
         });
+    });
+
+    Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [UserController::class, 'index'])->middleware('permission:view-users');
+        Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:view-users');
+        Route::post('/', [UserController::class, 'store'])->middleware('permission:create-users');
+        Route::post('/{id}/update', [UserController::class, 'update'])->middleware('permission:edit-users');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('permission:delete-users');
     });
 });

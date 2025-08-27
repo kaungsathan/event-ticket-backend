@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         $this->createTestUsers();
 
         // Create bulk users for testing
-        $this->createBulkUsers();
+        // $this->createBulkUsers();
 
         $this->command->info('Users created successfully!');
     }
@@ -36,27 +36,33 @@ class UserSeeder extends Seeder
 
         // Super Admin
         User::factory()->create([
-            'name' => 'Super Administrator',
+            'username' => 'superadmin',
+            'full_name' => 'Super Administrator',
             'email' => 'superadmin@eventticket.com',
             'phone' => '+1234567890',
+            'status' => 'active',
             'password' => Hash::make('SuperAdmin123!'),
             'email_verified_at' => now(),
         ])->assignRole('super-admin');
 
         // System Admin
         User::factory()->create([
-            'name' => 'System Admin',
+            'username' => 'admin',
+            'full_name' => 'System Admin',
             'email' => 'admin@eventticket.com',
             'phone' => '+1234567891',
+            'status' => 'active',
             'password' => Hash::make('Admin123!'),
             'email_verified_at' => now(),
         ])->assignRole('admin');
 
         // Backup Admin
         User::factory()->create([
-            'name' => 'Backup Admin',
+            'username' => 'backupadmin',
+            'full_name' => 'Backup Admin',
             'email' => 'backup@eventticket.com',
             'phone' => '+1234567892',
+            'status' => 'active',
             'password' => Hash::make('Backup123!'),
             'email_verified_at' => now(),
         ])->assignRole('admin');
@@ -71,60 +77,74 @@ class UserSeeder extends Seeder
 
         // Event Managers
         User::factory()->create([
-            'name' => 'Alice Johnson',
+            'username' => 'alice',
+            'full_name' => 'Alice Johnson',
             'email' => 'alice.manager@eventticket.com',
             'phone' => '+1234567893',
+            'status' => 'active',
             'password' => Hash::make('Manager123!'),
             'email_verified_at' => now(),
         ])->assignRole('event-manager');
 
         User::factory()->create([
-            'name' => 'Bob Wilson',
+            'username' => 'bob',
+            'full_name' => 'Bob Wilson',
             'email' => 'bob.manager@eventticket.com',
             'phone' => '+1234567894',
+            'status' => 'active',
             'password' => Hash::make('Manager123!'),
             'email_verified_at' => now(),
         ])->assignRole('event-manager');
 
         // Customer Service Representatives
         User::factory()->create([
-            'name' => 'Carol Davis',
+            'username' => 'carol',
+            'full_name' => 'Carol Davis',
             'email' => 'carol.support@eventticket.com',
             'phone' => '+1234567895',
+            'status' => 'active',
             'password' => Hash::make('Support123!'),
             'email_verified_at' => now(),
         ])->assignRole('customer-service');
 
         User::factory()->create([
-            'name' => 'David Brown',
+            'username' => 'david',
+            'full_name' => 'David Brown',
             'email' => 'david.support@eventticket.com',
             'phone' => '+1234567896',
+            'status' => 'active',
             'password' => Hash::make('Support123!'),
             'email_verified_at' => now(),
         ])->assignRole('customer-service');
 
         // Premium Customers
         User::factory()->create([
-            'name' => 'Emma Smith',
+            'username' => 'emma',
+            'full_name' => 'Emma Smith',
             'email' => 'emma.customer@example.com',
             'phone' => '+1234567897',
+            'status' => 'active',
             'password' => Hash::make('Customer123!'),
             'email_verified_at' => now(),
         ])->assignRole('customer');
 
         User::factory()->create([
-            'name' => 'Frank Miller',
+            'username' => 'frank',
+            'full_name' => 'Frank Miller',
             'email' => 'frank.customer@example.com',
             'phone' => '+1234567898',
+            'status' => 'active',
             'password' => Hash::make('Customer123!'),
             'email_verified_at' => now(),
         ])->assignRole('customer');
 
         // Unverified customer (for testing email verification)
         User::factory()->create([
-            'name' => 'Grace Taylor',
+            'username' => 'grace',
+            'full_name' => 'Grace Taylor',
             'email' => 'grace.unverified@example.com',
             'phone' => '+1234567899',
+            'status' => 'active',
             'password' => Hash::make('Customer123!'),
             'email_verified_at' => null,
         ])->assignRole('customer');

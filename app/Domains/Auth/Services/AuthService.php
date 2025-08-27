@@ -74,7 +74,7 @@ class AuthService
                 'email' => $user->email,
                 'phone' => $user->phone ?? null,
                 'roles' => $user->getRoleNames(),
-                'permissions' => $user->getPermissionNames(),
+                'permissions' => $user->getFormattedPermissions(),
                 'permissions_by_category' => $user->getPermissionsByCategory(),
                 'primary_role' => $user->getPrimaryRole(),
                 'primary_role_display' => $user->getRoleDisplayName(),
@@ -167,10 +167,11 @@ class AuthService
     {
         return [
             'id' => $user->id,
-            'name' => $user->name,
+            'username' => $user->username,
+            'full_name' => $user->full_name,
             'email' => $user->email,
             'roles' => $user->getRoleNames(),
-            'permissions' => $user->getPermissionNames(),
+            'permissions' => $user->getFormattedPermissions(),
             'primary_role' => $user->getPrimaryRole(),
             'primary_role_display' => $user->getRoleDisplayName(),
             'can_access_admin' => $user->canAccessAdmin(),
