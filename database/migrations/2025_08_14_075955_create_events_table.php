@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTime('end_date');
             $table->string('type')->nullable();
             $table->string('category')->nullable();
+            $table->string('status')->default('active');
             $table->string('location')->nullable();
             $table->decimal('price', 10, 2)->default(0);
             $table->integer('max_attendees')->nullable();

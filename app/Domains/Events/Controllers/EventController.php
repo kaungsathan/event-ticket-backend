@@ -22,13 +22,12 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Event::class);
+        $events = $this->eventService->getEvents($request->all());
 
-        $events = $this->eventService->getEvents([
-            'per_page' => $request->get('per_page', 15)
+        return response()->json([
+            'message' => 'Events fetched successfully',
+            'data' => $events
         ]);
-
-        return response()->json($events);
     }
 
     /**
@@ -36,8 +35,6 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        $this->authorize('create', Event::class);
-
         $event = $this->eventService->createEvent($request->validated(), auth()->user());
 
         return response()->json($event, 201);

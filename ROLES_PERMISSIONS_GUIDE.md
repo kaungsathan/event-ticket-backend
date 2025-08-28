@@ -44,7 +44,7 @@ The system uses the Spatie Laravel Permission package to provide a comprehensive
 ### Event Manager (`event-manager`)
 - **Priority**: Medium (3)
 - **Description**: Manages events and related tickets
-- **Permissions**: Event and ticket management, order viewing, reports
+- **Permissions**: Event and ticket management, order viewing
 - **Use Case**: Event organizers, content managers
 
 ### Customer (`customer`)
