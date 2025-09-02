@@ -20,19 +20,19 @@ class UpdateEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|string|max:255',
-            'organizer_id' => 'sometimes|exists:organizers,id',
+            'title' => 'required|string|max:255',
+            'organizer_id' => 'nullable|exists:organizers,id',
             'description' => 'nullable|string',
-            'start_date' => 'sometimes|date|after:now',
-            'end_date' => 'sometimes|date|after:start_date',
+            'category_id' => 'nullable|string|max:255',
+            'tag_id' => 'nullable|string|max:255',
+            'type_id' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
+            'start_date' => 'required|date|after:now',
+            'end_date' => 'required|date|after:start_date',
             'location' => 'nullable|string|max:255',
-            'type' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'status' => 'required|string|max:255',
-            'price' => 'sometimes|numeric|min:0',
+            'price' => 'required|numeric|min:0',
             'max_attendees' => 'nullable|integer|min:1',
-            'is_published' => 'sometimes|boolean',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }
 
@@ -51,10 +51,12 @@ class UpdateEventRequest extends FormRequest
             'end_date.after' => 'End date must be after the start date.',
             'location.string' => 'Location must be a string.',
             'location.max' => 'Location may not be greater than 255 characters.',
-            'type.string' => 'Type must be a string.',
-            'type.max' => 'Type may not be greater than 255 characters.',
-            'category.string' => 'Category must be a string.',
-            'category.max' => 'Category may not be greater than 255 characters.',
+            'type_id.string' => 'Type must be a string.',
+            'type_id.max' => 'Type may not be greater than 255 characters.',
+            'tag_id.string' => 'Tag must be a string.',
+            'tag_id.max' => 'Tag may not be greater than 255 characters.',
+            'category_id.string' => 'Category must be a string.',
+            'category_id.max' => 'Category may not be greater than 255 characters.',
             'status.string' => 'Status must be a string.',
             'status.max' => 'Status may not be greater than 255 characters.',
             'price.numeric' => 'Price must be a number.',
@@ -80,6 +82,9 @@ class UpdateEventRequest extends FormRequest
             'max_attendees' => 'maximum attendees',
             'is_published' => 'published status',
             'image' => 'image',
+            'type_id' => 'type',
+            'tag_id' => 'tag',
+            'category_id' => 'category',
         ];
     }
 }

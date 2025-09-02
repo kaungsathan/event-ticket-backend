@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Event extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
 
     protected $fillable = [
         'title',
@@ -25,6 +25,9 @@ class Event extends Model
         'is_published',
         'created_by',
         'organizer_id',
+        'type_id',
+        'tag_id',
+        'category_id',
     ];
 
     protected function casts(): array
@@ -39,15 +42,9 @@ class Event extends Model
     }
 
     /**
-     * Get the activity log options for the model.
+     * Append image URL to model attributes
      */
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logOnly(['title', 'description', 'start_date', 'end_date', 'location', 'price', 'max_attendees', 'is_published', 'organizer_id'])
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
+    protected $appends = ['image_url'];
 
     /**
      * Get the user that created the event.
@@ -66,6 +63,30 @@ class Event extends Model
     }
 
     /**
+     * Get the type of this event.
+     */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(Type::class);
+    }
+
+    /**
+     * Get the category of this event.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the tag of this event.
+     */
+    public function tag(): BelongsTo
+    {
+        return $this->belongsTo(Tag::class);
+    }
+
+    /**
      * Get the orders for this event.
      */
     public function orders()
@@ -76,16 +97,15 @@ class Event extends Model
     /**
      * Get the featured image URL
      *
-     * @param string $size
-     * @return string
+     * @return string|null
      */
-    public function getImageUrlAttribute(string $size = 'original'): string
+    public function getImageUrlAttribute(): ?string
     {
         if (!$this->image) {
-            return $this->getDefaultImageUrl($size);
+            return null;
         }
 
-        return Storage::disk('public')->url($this->image);
+        return asset('storage/' . $this->image);
     }
 
     /**
@@ -112,7 +132,7 @@ class Event extends Model
         }
 
         return array_map(function ($imagePath) use ($size) {
-            return Storage::disk('public')->url($imagePath);
+            return asset('storage/' . $imagePath);
         }, $this->gallery_images);
     }
 

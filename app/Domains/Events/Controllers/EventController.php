@@ -2,12 +2,13 @@
 
 namespace App\Domains\Events\Controllers;
 
+use App\Models\Event;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Domains\Events\Services\EventService;
 use App\Domains\Events\Requests\StoreEventRequest;
 use App\Domains\Events\Requests\UpdateEventRequest;
-use App\Models\Event;
-use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
@@ -35,7 +36,13 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        $event = $this->eventService->createEvent($request->validated(), auth()->user());
+        $payload = $request->validated();
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('events', 'public');
+            $payload['image'] = $imagePath;
+        }
+
+        $event = $this->eventService->createEvent($payload, auth()->user());
 
         return response()->json($event, 201);
     }
@@ -56,10 +63,21 @@ class EventController extends Controller
     /**
      * Update the specified event.
      */
-    public function update(UpdateEventRequest $request, int $id)
+    public function update(int $id, UpdateEventRequest $request)
     {
-        dd($request->validated());
-        $event = $this->eventService->updateEvent($id, $request->validated());
+        $payload = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $event = Event::find($id);
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+
+            $imagePath = $request->file('image')->store('events', 'public');
+            $payload['image'] = $imagePath;
+        }
+
+        $event = $this->eventService->updateEvent($id, $payload);
 
         return response()->json([
             'message' => 'Event updated successfully',
@@ -70,11 +88,9 @@ class EventController extends Controller
     /**
      * Remove the specified event.
      */
-    public function destroy(Event $event)
+    public function destroy(int $id)
     {
-        $this->authorize('delete', $event);
-
-        $this->eventService->deleteEvent($event, auth()->user());
+        $this->eventService->deleteEvent($id);
 
         return response()->json(['message' => 'Event deleted successfully']);
     }

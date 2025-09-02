@@ -28,6 +28,8 @@ class EventService
                 ->orWhere('description', 'like', '%' . $params['search'] . '%');
         }
 
+        $query->orderBy('created_at', 'desc');
+
         return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
@@ -36,7 +38,6 @@ class EventService
      */
     public function createEvent(array $eventData, User $user): Event
     {
-        dd($eventData);
         $event = Event::create([
             ...$eventData,
             'created_by' => $user->id,
@@ -81,13 +82,10 @@ class EventService
     /**
      * Delete an event.
      */
-    public function deleteEvent(Event $event, User $user): void
+    public function deleteEvent(int $id): void
     {
-        // Log activity before deletion - TEMPORARILY DISABLED
-        // activity()
-        //     ->performedOn($event)
-        //     ->causedBy($user)
-        //     ->log('Event deleted');
+        $event = Event::findOrFail($id);
+
 
         $event->delete();
     }
