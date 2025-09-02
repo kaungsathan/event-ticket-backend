@@ -53,9 +53,9 @@ class EventService
     /**
      * Get a single event with optional includes.
      */
-    public function getEvent(Event $event, array $includes = ['creator']): Event
+    public function getEvent(int $id, array $includes = ['creator']): Event
     {
-        return QueryBuilder::for(Event::where('id', $event->id))
+        return QueryBuilder::for(Event::where('id', $id))
             ->allowedIncludes($includes)
             ->first();
     }
@@ -63,8 +63,9 @@ class EventService
     /**
      * Update an event.
      */
-    public function updateEvent(Event $event, array $eventData, User $user): Event
+    public function updateEvent(int $id, array $eventData): Event
     {
+        $event = Event::find($id);
         $event->update($eventData);
 
         // Log activity - TEMPORARILY DISABLED
@@ -73,7 +74,7 @@ class EventService
         //     ->causedBy($user)
         //     ->log('Event updated');
 
-        return $event->load('creator');
+        return $event;
     }
 
     /**

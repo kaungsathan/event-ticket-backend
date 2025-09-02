@@ -43,25 +43,28 @@ class EventController extends Controller
     /**
      * Display the specified event.
      */
-    public function show(Event $event)
+    public function show(int $id)
     {
-        $this->authorize('view', $event);
+        $event = $this->eventService->getEvent($id);
 
-        $event = $this->eventService->getEvent($event);
-
-        return response()->json($event);
+        return response()->json([
+            'message' => 'Event fetched successfully',
+            'data' => $event
+        ]);
     }
 
     /**
      * Update the specified event.
      */
-    public function update(UpdateEventRequest $request, Event $event)
+    public function update(UpdateEventRequest $request, int $id)
     {
-        $this->authorize('update', $event);
+        dd($request->validated());
+        $event = $this->eventService->updateEvent($id, $request->validated());
 
-        $event = $this->eventService->updateEvent($event, $request->validated(), auth()->user());
-
-        return response()->json($event);
+        return response()->json([
+            'message' => 'Event updated successfully',
+            'data' => $event
+        ]);
     }
 
     /**

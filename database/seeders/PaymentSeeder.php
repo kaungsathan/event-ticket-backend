@@ -10,96 +10,107 @@ class PaymentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * Seeds the payments table with popular payment methods available in Myanmar.
+     * This includes mobile banking, digital wallets, traditional payment methods,
+     * and international payment options.
      */
     public function run(): void
     {
         $paymentMethods = [
+            // Traditional Payment Methods
             [
-                'name' => 'Cash',
+                'name' => 'Cash Payment',
                 'code' => 'cash',
-                'description' => 'Cash payment at the venue or upon delivery',
-                'type' => 'cash',
-                'is_active' => true,
-                'processing_fee_percentage' => 0,
-                'processing_fee_fixed' => 0,
-                'sort_order' => 1,
-                'icon' => 'cash-icon',
-            ],
-            [
-                'name' => 'KBZ Pay',
-                'code' => 'kbz_pay',
-                'description' => 'KBZ Bank mobile payment system',
-                'type' => 'mobile_payment',
-                'is_active' => true,
-                'processing_fee_percentage' => 1.50,
-                'processing_fee_fixed' => 0,
-                'sort_order' => 2,
-                'icon' => 'kbz-icon',
-                'settings' => [
-                    'merchant_id' => null,
-                    'api_key' => null,
-                    'sandbox' => true,
-                ],
-            ],
-            [
-                'name' => 'MPU',
-                'code' => 'mpu',
-                'description' => 'Myanmar Payment Union card payment',
-                'type' => 'digital',
-                'is_active' => true,
-                'processing_fee_percentage' => 2.00,
-                'processing_fee_fixed' => 0,
-                'sort_order' => 3,
-                'icon' => 'mpu-icon',
-            ],
-            [
-                'name' => 'Wave Pay',
-                'code' => 'wave_pay',
-                'description' => 'Wave Money mobile payment',
-                'type' => 'mobile_payment',
-                'is_active' => true,
-                'processing_fee_percentage' => 1.75,
-                'processing_fee_fixed' => 0,
-                'sort_order' => 4,
-                'icon' => 'wave-icon',
-            ],
-            [
-                'name' => 'AYA Pay',
-                'code' => 'aya_pay',
-                'description' => 'AYA Bank mobile payment system',
-                'type' => 'mobile_payment',
-                'is_active' => true,
-                'processing_fee_percentage' => 1.50,
-                'processing_fee_fixed' => 0,
-                'sort_order' => 5,
-                'icon' => 'aya-icon',
+                'status' => 'active',
             ],
             [
                 'name' => 'Bank Transfer',
                 'code' => 'bank_transfer',
-                'description' => 'Direct bank transfer payment',
-                'type' => 'bank_transfer',
-                'is_active' => true,
-                'processing_fee_percentage' => 0,
-                'processing_fee_fixed' => 0,
-                'sort_order' => 8,
-                'icon' => 'bank-icon',
+                'status' => 'active',
+            ],
+
+            // Major Myanmar Mobile Banking & Digital Wallets
+            [
+                'name' => 'KBZ Pay',
+                'code' => 'kbz_pay',
+                'status' => 'active',
             ],
             [
-                'name' => 'Credit Card',
+                'name' => 'CB Pay',
+                'code' => 'cb_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'AYA Pay',
+                'code' => 'aya_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'Wave Pay',
+                'code' => 'wave_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'UAB Pay',
+                'code' => 'uab_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'MAB Pay',
+                'code' => 'mab_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'Yoma Pay',
+                'code' => 'yoma_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'AGD Pay',
+                'code' => 'agd_pay',
+                'status' => 'active',
+            ],
+
+            // Card Payment Systems
+            [
+                'name' => 'MPU Card',
+                'code' => 'mpu',
+                'status' => 'active',
+            ],
+
+            // Regional Digital Wallets
+            [
+                'name' => 'OK Dollar',
+                'code' => 'ok_dollar',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'ONEPay',
+                'code' => 'one_pay',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'True Money',
+                'code' => 'true_money',
+                'status' => 'active',
+            ],
+
+            // International Payment Options (inactive by default)
+            [
+                'name' => 'Credit/Debit Card',
                 'code' => 'credit_card',
-                'description' => 'International credit card payment via Stripe',
-                'type' => 'digital',
-                'is_active' => false, // Disabled by default until configured
-                'processing_fee_percentage' => 2.90,
-                'processing_fee_fixed' => 0.30,
-                'sort_order' => 9,
-                'icon' => 'credit-card-icon',
-                'settings' => [
-                    'stripe_public_key' => null,
-                    'stripe_secret_key' => null,
-                    'supported_cards' => ['visa', 'mastercard', 'amex'],
-                ],
+                'status' => 'inactive',
+            ],
+            [
+                'name' => 'PayPal',
+                'code' => 'paypal',
+                'status' => 'inactive',
+            ],
+            [
+                'name' => 'Stripe',
+                'code' => 'stripe',
+                'status' => 'inactive',
             ],
         ];
 
@@ -110,6 +121,6 @@ class PaymentSeeder extends Seeder
             );
         }
 
-        $this->command->info('Payment methods seeded successfully!');
+        $this->command->info('Payment methods seeded successfully! Total: ' . count($paymentMethods) . ' payment methods.');
     }
 }

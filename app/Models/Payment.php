@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
 
 class Payment extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -18,31 +16,7 @@ class Payment extends Model
     protected $fillable = [
         'name',
         'code',
-        'description',
-        'type',
-        'is_active',
-        'processing_fee_percentage',
-        'processing_fee_fixed',
-        'sort_order',
-        'settings',
-        'icon',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     */
-    protected $casts = [
-        'is_active' => 'boolean',
-        'processing_fee_percentage' => 'decimal:2',
-        'processing_fee_fixed' => 'decimal:2',
-        'settings' => 'array',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     */
-    protected $hidden = [
-        'settings', // Hide sensitive settings like API keys
+        'status'
     ];
 
         /**
@@ -73,7 +47,7 @@ class Payment extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
     /**
@@ -81,39 +55,15 @@ class Payment extends Model
      */
     public function scopeInactive($query)
     {
-        return $query->where('is_active', false);
+        return $query->where('status', 'inactive');
     }
 
     /**
      * Scope: Filter by type.
      */
-    public function scopeType($query, string $type)
+    public function scopeStatus($query, string $status)
     {
-        return $query->where('type', $type);
-    }
-
-    /**
-     * Scope: Order by sort order.
-     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order')->orderBy('name');
-    }
-
-    /**
-     * Scope: Get digital payment methods.
-     */
-    public function scopeDigital($query)
-    {
-        return $query->where('type', 'digital');
-    }
-
-    /**
-     * Scope: Get cash payment methods.
-     */
-    public function scopeCash($query)
-    {
-        return $query->where('type', 'cash');
+        return $query->where('status', $status);
     }
 
         /**
@@ -121,7 +71,7 @@ class Payment extends Model
      */
     public function isActive(): bool
     {
-        return $this->is_active;
+        return $this->status === 'active';
     }
 
     /**
@@ -129,7 +79,7 @@ class Payment extends Model
      */
     public function isInactive(): bool
     {
-        return !$this->is_active;
+        return $this->status === 'inactive';
     }
 
     /**
@@ -137,7 +87,7 @@ class Payment extends Model
      */
     public function isDigital(): bool
     {
-        return $this->type === 'digital';
+        return $this->status === 'active';
     }
 
     /**
@@ -145,7 +95,7 @@ class Payment extends Model
      */
     public function isCash(): bool
     {
-        return $this->type === 'cash';
+        return $this->status === 'inactive';
     }
 
     /**
@@ -153,7 +103,7 @@ class Payment extends Model
      */
     public function activate(): void
     {
-        $this->update(['is_active' => true]);
+        $this->update(['status' => 'active']);
     }
 
     /**
@@ -161,7 +111,7 @@ class Payment extends Model
      */
     public function deactivate(): void
     {
-        $this->update(['is_active' => false]);
+        $this->update(['status' => 'inactive']);
     }
 
     /**
@@ -169,8 +119,7 @@ class Payment extends Model
      */
     public function calculateProcessingFee(float $amount): float
     {
-        $percentageFee = ($amount * $this->processing_fee_percentage) / 100;
-        return $percentageFee + $this->processing_fee_fixed;
+        return 0;
     }
 
     /**
@@ -178,6 +127,6 @@ class Payment extends Model
      */
     public function calculateTotalWithFee(float $baseAmount): float
     {
-        return $baseAmount + $this->calculateProcessingFee($baseAmount);
+        return $baseAmount;
     }
 }
