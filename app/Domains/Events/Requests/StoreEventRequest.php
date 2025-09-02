@@ -31,6 +31,7 @@ class StoreEventRequest extends FormRequest
             'location' => 'nullable|string|max:255',
             'price' => 'required|numeric|min:0',
             'max_attendees' => 'nullable|integer|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }
 
@@ -57,6 +58,9 @@ class StoreEventRequest extends FormRequest
             'price.min' => 'Price must be at least 0.',
             'max_attendees.integer' => 'Maximum attendees must be an integer.',
             'max_attendees.min' => 'Maximum attendees must be at least 1.',
+            'image.image' => 'Image must be a valid image file.',
+            'image.mimes' => 'Image must be a JPEG, PNG, or WebP file.',
+            'image.max' => 'Image cannot exceed 2MB.',
         ];
     }
 
@@ -70,6 +74,7 @@ class StoreEventRequest extends FormRequest
             'start_date' => 'start date',
             'end_date' => 'end date',
             'max_attendees' => 'maximum attendees',
+            'image' => 'image',
         ];
     }
 }

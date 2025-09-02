@@ -16,14 +16,12 @@ class Event extends Model
     protected $fillable = [
         'title',
         'description',
-        'featured_image',
-        'gallery_images',
-        'image_alt_text',
         'start_date',
         'end_date',
         'location',
         'price',
         'max_attendees',
+        'image',
         'is_published',
         'created_by',
         'organizer_id',
@@ -81,13 +79,13 @@ class Event extends Model
      * @param string $size
      * @return string
      */
-    public function getFeaturedImageUrlAttribute(string $size = 'original'): string
+    public function getImageUrlAttribute(string $size = 'original'): string
     {
-        if (!$this->featured_image) {
+        if (!$this->image) {
             return $this->getDefaultImageUrl($size);
         }
 
-        return Storage::disk('public')->url($this->featured_image);
+        return Storage::disk('public')->url($this->image);
     }
 
     /**

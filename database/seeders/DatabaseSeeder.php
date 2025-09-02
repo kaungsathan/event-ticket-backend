@@ -17,6 +17,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             PaymentSeeder::class,
+            TagSeeder::class,
+            TypeSeeder::class,
+            CategorySeeder::class,
+            OrganizerSeeder::class,
         ]);
     }
 }

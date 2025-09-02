@@ -32,6 +32,7 @@ class UpdateEventRequest extends FormRequest
             'price' => 'sometimes|numeric|min:0',
             'max_attendees' => 'nullable|integer|min:1',
             'is_published' => 'sometimes|boolean',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }
 
@@ -61,6 +62,9 @@ class UpdateEventRequest extends FormRequest
             'max_attendees.integer' => 'Maximum attendees must be an integer.',
             'max_attendees.min' => 'Maximum attendees must be at least 1.',
             'is_published.boolean' => 'Published status must be true or false.',
+            'image.image' => 'Image must be a valid image file.',
+            'image.mimes' => 'Image must be a JPEG, PNG, or WebP file.',
+            'image.max' => 'Image cannot exceed 2MB.',
         ];
     }
 
@@ -75,6 +79,7 @@ class UpdateEventRequest extends FormRequest
             'end_date' => 'end date',
             'max_attendees' => 'maximum attendees',
             'is_published' => 'published status',
+            'image' => 'image',
         ];
     }
 }

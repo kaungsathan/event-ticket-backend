@@ -36,6 +36,7 @@ class EventService
      */
     public function createEvent(array $eventData, User $user): Event
     {
+        dd($eventData);
         $event = Event::create([
             ...$eventData,
             'created_by' => $user->id,
