@@ -21,10 +21,6 @@ use App\Http\Controllers\EventController;
 
 // Domain routes are loaded by DomainServiceProvider
 
-// Event routes
-Route::apiResource('events', EventController::class)->except(['edit', 'create']);
-Route::post('events/{event}/gallery-image', [EventController::class, 'removeGalleryImage'])->middleware('auth:sanctum');
-Route::patch('events/{event}/toggle-publish', [EventController::class, 'togglePublish'])->middleware('auth:sanctum');
 
 Route::group(['prefix' => 'options', 'middleware' => 'auth:sanctum'], function () {
     Route::get('role', [OptionController::class, 'getRoles']);
