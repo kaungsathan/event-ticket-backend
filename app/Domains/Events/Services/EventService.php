@@ -18,14 +18,31 @@ class EventService
         $page = $params['page'] ?? 1;
         $perPage = $params['per_page'] ?? 15;
         $status = $params['status'] ?? null;
+        $organizerId = $params['organizer_id'] ?? null;
+        $typeId = $params['type_id'] ?? null;
+        $categoryId = $params['category_id'] ?? null;
+        $tagId = $params['tag_id'] ?? null;
 
-        $query = Event::query()->with(['organizer'])
-                ->when($status, fn ($query) => $query->where('status', $status));
+        $query = Event::query()
+                ->leftJoin('organizers', 'events.organizer_id', 'organizers.id')
+                ->leftJoin('types', 'events.type_id', 'types.id')
+                ->leftJoin('categories', 'events.category_id', 'categories.id')
+                ->leftJoin('tags', 'events.tag_id', 'tags.id')
+                ->select('events.*', 'organizers.company_name as organizer_name', 'types.name as type_name', 'categories.name as category_name', 'tags.name as tag_name')
+                ->when($status, fn ($query) => $query->where('status', $status))
+                ->when($organizerId, fn ($query) => $query->where('organizer_id', $organizerId))
+                ->when($typeId, fn ($query) => $query->where('type_id', $typeId))
+                ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
+                ->when($tagId, fn ($query) => $query->where('tag_id', $tagId));
 
         if(isset($params['search']))
         {
             $query->where('title', 'like', '%' . $params['search'] . '%')
-                ->orWhere('description', 'like', '%' . $params['search'] . '%');
+                ->orWhere('description', 'like', '%' . $params['search'] . '%')
+                ->orWhere('organizer_name', 'like', '%' . $params['search'] . '%')
+                ->orWhere('type_name', 'like', '%' . $params['search'] . '%')
+                ->orWhere('category_name', 'like', '%' . $params['search'] . '%')
+                ->orWhere('tag_name', 'like', '%' . $params['search'] . '%');
         }
 
         $query->orderBy('created_at', 'desc');
