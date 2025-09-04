@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
+            $table->string('customer_name');
+            $table->string('customer_email');
+            $table->string('customer_phone');
+            $table->string('customer_address');
+            $table->integer('quantity');
+            $table->decimal('total_amount', 10, 2);
+            $table->string('payment_status')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('status')->default('completed');
             $table->timestamps();

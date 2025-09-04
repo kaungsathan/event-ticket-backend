@@ -19,7 +19,13 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'event_id',
-        'amount',
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'customer_address',
+        'quantity',
+        'total_amount',
+        'payment_status',
         'payment_method',
         'status',
     ];
@@ -28,8 +34,7 @@ class Order extends Model
      * The attributes that should be cast.
      */
     protected $casts = [
-        'amount' => 'decimal:2',
-        'paid_at' => 'datetime',
+        'total_amount' => 'decimal:2',
     ];
 
     /**
