@@ -11,8 +11,11 @@ class PaymentController extends Controller
     {
         $page = $request->get('page') ?? 1;
         $perPage = $request->get('per_page') ?? 5;
+        $status = $request->get('status') ?? '';
 
-        $payments = Payment::paginate($perPage, ['*'], 'page', $page);
+        $payments = Payment::when($status, function ($query) use ($status) {
+            $query->where('status', $status);
+        })->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'message' => 'Payments fetched successfully',
