@@ -7,19 +7,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
 
     // Standard CRUD operations
-    Route::apiResource('orders', OrderController::class);
-
-    // Special order actions
-    Route::post('/orders/{order}/confirm', [OrderController::class, 'confirm'])
-        ->middleware('permission:edit orders');
-
-    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel']);
-
-    Route::post('/orders/{order}/refund', [OrderController::class, 'refund'])
-        ->middleware('permission:refund orders');
-
-    // Order statistics (admin only)
-    Route::middleware(['role:super-admin,admin,event-manager'])->group(function () {
-        Route::get('/orders/statistics', [OrderController::class, 'statistics']);
+    Route::group(['prefix' => 'orders', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [OrderController::class, 'index'])->middleware('permission:view-orders');
+        Route::post('/', [OrderController::class, 'store'])->middleware('permission:create-orders');
+        Route::get('/{id}', [OrderController::class, 'show'])->middleware('permission:view-orders');
+        Route::post('/{id}/update', [OrderController::class, 'update'])->middleware('permission:edit-orders');
+        Route::delete('/{id}', [OrderController::class, 'destroy'])->middleware('permission:delete-orders');
     });
 });

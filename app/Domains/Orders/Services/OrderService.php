@@ -5,6 +5,7 @@ namespace App\Domains\Orders\Services;
 use App\Models\Order;
 use App\Models\Event;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,60 +17,23 @@ class OrderService
     /**
      * Create a new order.
      */
-    public function createOrder(User $user, array $data): Order
+    public function createOrder(array $data): Order
     {
-        return DB::transaction(function () use ($user, $data) {
-            $event = Event::findOrFail($data['event_id']);
-
-            // Calculate pricing using pricing service
-            $pricing = app(PricingService::class)->calculateOrderPricing(
-                $event,
-                $data['quantity']
-            );
-
-            return Order::create([
-                'user_id' => $user->id,
-                'event_id' => $data['event_id'],
-                'customer_name' => $data['customer_name'],
-                'customer_email' => $data['customer_email'],
-                'customer_phone' => $data['customer_phone'] ?? null,
-                'quantity' => $data['quantity'],
-                'unit_price' => $pricing['unit_price'],
-                'subtotal' => $pricing['subtotal'],
-                'tax_amount' => $pricing['tax_amount'],
-                'service_fee' => $pricing['service_fee'],
-                'total_amount' => $pricing['total_amount'],
-                'status' => 'pending',
-                'payment_status' => 'pending',
-                'notes' => $data['notes'] ?? null,
-            ]);
-        });
+        dd($data);
     }
 
     /**
      * Get paginated orders with filtering and sorting.
      */
-    public function getOrders(User $user, array $params = []): LengthAwarePaginator
+    public function getOrders(Request $request): LengthAwarePaginator
     {
+        $page = $request->get('page');
+        $perPage = $request->get('per_page');
         $query = Order::query();
 
-        // Non-staff users can only see their own orders
-        if (!$user->can('view orders')) {
-            $query->where('user_id', $user->id);
-        }
+        return $query->paginate($perPage, ['*'], 'page', $page);
 
-        return QueryBuilder::for($query)
-            ->allowedFilters([
-                'status',
-                'payment_status',
-                'customer_email',
-                AllowedFilter::exact('user_id'),
-                AllowedFilter::exact('event_id'),
-            ])
-            ->allowedSorts(['created_at', 'total_amount', 'order_number'])
-            ->allowedIncludes(['user', 'event'])
-            ->defaultSort('-created_at')
-            ->paginate($params['per_page'] ?? 15);
+
     }
 
     /**

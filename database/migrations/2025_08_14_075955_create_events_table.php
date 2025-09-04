@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('organizer_id')->nullable();
+            $table->foreignId('organizer_id')->onDelete('cascade');
             $table->text('description')->nullable();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->foreignId('type_id')->nullable();
-            $table->foreignId('category_id')->nullable();
-            $table->foreignId('tag_id')->nullable();
+            $table->foreignId('type_id')->onDelete('cascade');
+            $table->foreignId('category_id')->onDelete('cascade');
+            $table->foreignId('tag_id')->onDelete('cascade');
             $table->string('status')->default('active');
             $table->string('location')->nullable();
             $table->decimal('price', 10, 2)->default(0);

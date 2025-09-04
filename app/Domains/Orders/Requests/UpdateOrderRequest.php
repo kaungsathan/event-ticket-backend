@@ -21,10 +21,11 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_name' => 'sometimes|string|max:255',
-            'customer_email' => 'sometimes|email|max:255',
-            'customer_phone' => 'sometimes|string|max:20',
-            'status' => ['sometimes', Rule::in(['pending', 'confirmed', 'cancelled'])],
+            'event_id' => 'required|exists:events,id',
+            'user_id' => 'required|exists:users,id',
+            'amount' => 'required|numeric|min:0',
+            'payment_method' => 'nullable|string|max:255',
+            'status' => 'sometimes|string|in:pending,confirmed,cancelled,completed',
         ];
     }
 
@@ -34,13 +35,17 @@ class UpdateOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'customer_name.string' => 'Customer name must be a string.',
-            'customer_name.max' => 'Customer name may not be greater than 255 characters.',
-            'customer_email.email' => 'Customer email must be a valid email address.',
-            'customer_email.max' => 'Customer email may not be greater than 255 characters.',
-            'customer_phone.string' => 'Customer phone must be a string.',
-            'customer_phone.max' => 'Customer phone may not be greater than 20 characters.',
-            'status.in' => 'Status must be one of: pending, confirmed, cancelled.',
+            'event_id.required' => 'Event is required.',
+            'event_id.exists' => 'The selected event does not exist.',
+            'user_id.required' => 'User is required.',
+            'user_id.exists' => 'The selected user does not exist.',
+            'amount.required' => 'Amount is required.',
+            'amount.numeric' => 'Amount must be a number.',
+            'amount.min' => 'Amount must be at least 0.',
+            'payment_method.string' => 'Payment method must be a string.',
+            'payment_method.max' => 'Payment method may not be greater than 255 characters.',
+            'status.string' => 'Status must be a string.',
+            'status.in' => 'Status must be one of: pending, confirmed, cancelled, completed.',
         ];
     }
 
@@ -50,9 +55,11 @@ class UpdateOrderRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'customer_name' => 'customer name',
-            'customer_email' => 'customer email',
-            'customer_phone' => 'customer phone',
+            'event_id' => 'event',
+            'user_id' => 'user',
+            'amount' => 'amount',
+            'payment_method' => 'payment method',
+            'status' => 'status',
         ];
     }
 }

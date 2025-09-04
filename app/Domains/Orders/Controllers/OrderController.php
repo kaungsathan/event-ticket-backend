@@ -26,14 +26,10 @@ class OrderController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', Order::class);
-
-        $orders = $this->orderService->getOrders(auth()->user(), [
-            'per_page' => $request->get('per_page', 15)
-        ]);
+        $orders = $this->orderService->getOrders($request);
 
         return response()->json([
-            'success' => true,
+            'message' => 'Order fetched successfully',
             'data' => $orders,
         ]);
     }
@@ -43,10 +39,9 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        $this->authorize('create', Order::class);
 
         try {
-            $order = $this->orderService->createOrder($request->user(), $request->validated());
+            $order = $this->orderService->createOrder($request->validated());
             $order = $this->orderService->getOrderWithRelations($order);
 
             return response()->json([

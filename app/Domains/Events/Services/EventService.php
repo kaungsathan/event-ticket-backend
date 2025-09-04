@@ -4,7 +4,6 @@ namespace App\Domains\Events\Services;
 
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\QueryBuilder;
 
