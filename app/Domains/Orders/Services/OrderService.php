@@ -19,7 +19,7 @@ class OrderService
      */
     public function createOrder(array $data): Order
     {
-        dd($data);
+        return Order::create($data);
     }
 
     /**

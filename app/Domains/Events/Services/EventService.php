@@ -28,20 +28,16 @@ class EventService
                 ->leftJoin('categories', 'events.category_id', 'categories.id')
                 ->leftJoin('tags', 'events.tag_id', 'tags.id')
                 ->select('events.*', 'organizers.company_name as organizer_name', 'types.name as type_name', 'categories.name as category_name', 'tags.name as tag_name')
-                ->when($status, fn ($query) => $query->where('status', $status))
-                ->when($organizerId, fn ($query) => $query->where('organizer_id', $organizerId))
-                ->when($typeId, fn ($query) => $query->where('type_id', $typeId))
-                ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
-                ->when($tagId, fn ($query) => $query->where('tag_id', $tagId));
+                ->when($status, fn ($query) => $query->where('events.status', $status))
+                ->when($organizerId, fn ($query) => $query->where('events.organizer_id', $organizerId))
+                ->when($typeId, fn ($query) => $query->where('events.type_id', $typeId))
+                ->when($categoryId, fn ($query) => $query->where('events.category_id', $categoryId))
+                ->when($tagId, fn ($query) => $query->where('events.tag_id', $tagId));
+
 
         if(isset($params['search']))
         {
-            $query->where('title', 'like', '%' . $params['search'] . '%')
-                ->orWhere('description', 'like', '%' . $params['search'] . '%')
-                ->orWhere('organizer_name', 'like', '%' . $params['search'] . '%')
-                ->orWhere('type_name', 'like', '%' . $params['search'] . '%')
-                ->orWhere('category_name', 'like', '%' . $params['search'] . '%')
-                ->orWhere('tag_name', 'like', '%' . $params['search'] . '%');
+            $query->where('title', 'like', '%' . $params['search'] . '%');
         }
 
         $query->orderBy('created_at', 'desc');
