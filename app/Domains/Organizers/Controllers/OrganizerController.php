@@ -26,8 +26,6 @@ class OrganizerController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Organizer::class);
-
         $organizers = $this->organizerService->getOrganizerList($request->all());
 
         return response()->json([
