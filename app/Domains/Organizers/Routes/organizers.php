@@ -16,6 +16,6 @@ use App\Domains\Organizers\Controllers\OrganizerController;
 
 Route::get('organizers', [OrganizerController::class, 'index']);
 Route::post('organizers', [OrganizerController::class, 'store'])->middleware('auth:sanctum');
-Route::get('organizers/{id}', [OrganizerController::class, 'show'])->middleware('auth:sanctum');
+Route::get('organizers/{id}', [OrganizerController::class, 'show']);
 Route::post('organizers/{id}/update', [OrganizerController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('organizers/{id}', [OrganizerController::class, 'destroy'])->middleware('auth:sanctum');
