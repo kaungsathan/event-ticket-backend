@@ -25,16 +25,16 @@ Route::group(['prefix' => 'options', 'middleware' => 'auth:sanctum'], function (
     Route::get('role', [OptionController::class, 'getRoles']);
 });
 
-Route::group(['prefix' => 'attributes', 'middleware' => 'auth:sanctum'], function () {
-    Route::get('/', [AttributeController::class, 'index'])->middleware('permission:manage-settings');
-    Route::post('/', [AttributeController::class, 'store'])->middleware('permission:manage-settings');
-    Route::get('/{attribute}/{id}', [AttributeController::class, 'show'])->middleware('permission:manage-settings');
-    Route::put('/{id}', [AttributeController::class, 'update'])->middleware('permission:manage-settings');
-    Route::delete('/{attribute}/{id}', [AttributeController::class, 'destroy'])->middleware('permission:manage-settings');
+Route::group(['prefix' => 'attributes'], function () {
+    Route::get('/', [AttributeController::class, 'index']);
+    Route::post('/', [AttributeController::class, 'store']);
+    Route::get('/{attribute}/{id}', [AttributeController::class, 'show']);
+    Route::put('/{id}', [AttributeController::class, 'update']);
+    Route::delete('/{attribute}/{id}', [AttributeController::class, 'destroy']);
 });
 
-Route::group(['prefix' => 'payments', 'middleware' => 'auth:sanctum'], function () {
-    Route::get('/', [PaymentController::class, 'index'])->middleware('permission:manage-settings');
-    Route::get('/{id}', [PaymentController::class, 'show'])->middleware('permission:manage-settings');
-    Route::put('/{id}', [PaymentController::class, 'update'])->middleware('permission:manage-settings');
+Route::group(['prefix' => 'payments'], function () {
+    Route::get('/', [PaymentController::class, 'index']);
+    Route::get('/{id}', [PaymentController::class, 'show']);
+    Route::put('/{id}', [PaymentController::class, 'update']);
 });
