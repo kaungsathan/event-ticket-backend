@@ -14,15 +14,6 @@ use App\Domains\Organizers\Controllers\OrganizerController;
 |
 */
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    // Additional organizer-specific actions
-    Route::patch('organizers/{organizer}/verify', [OrganizerController::class, 'toggleVerification'])
-        ->name('organizers.toggle-verification');
-
-    Route::patch('organizers/{organizer}/status', [OrganizerController::class, 'toggleStatus'])
-        ->name('organizers.toggle-status');
-});
-
 Route::get('organizers', [OrganizerController::class, 'index']);
 Route::post('organizers', [OrganizerController::class, 'store'])->middleware('auth:sanctum');
 Route::get('organizers/{id}', [OrganizerController::class, 'show']);
