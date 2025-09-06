@@ -26,8 +26,6 @@ class OrganizerController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Organizer::class);
-
         $organizers = $this->organizerService->getOrganizerList($request->all());
 
         return response()->json([
@@ -41,8 +39,6 @@ class OrganizerController extends Controller
      */
     public function store(StoreOrganizerRequest $request)
     {
-        $this->authorize('create', Organizer::class);
-
         $organizer = $this->organizerService->createOrganizer($request->validated(), auth()->user());
 
         return response()->json([
@@ -56,8 +52,6 @@ class OrganizerController extends Controller
      */
     public function show(int $id)
     {
-        $this->authorize('viewAny', Organizer::class);
-
         $organizer = $this->organizerService->getOrganizer($id);
 
         return response()->json([

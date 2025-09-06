@@ -62,7 +62,6 @@ class OrderController extends Controller
      */
     public function show(Order $order): JsonResponse
     {
-        $this->authorize('view', $order);
         $order = $this->orderService->getOrderWithRelations($order);
 
         return response()->json([
@@ -76,7 +75,6 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order): JsonResponse
     {
-        $this->authorize('update', $order);
 
         $order = $this->orderService->updateOrder($order, $request->validated());
 
@@ -92,7 +90,6 @@ class OrderController extends Controller
      */
     public function destroy(Order $order): JsonResponse
     {
-        $this->authorize('delete', $order);
 
         $this->orderService->deleteOrder($order, auth()->user());
 
@@ -107,7 +104,6 @@ class OrderController extends Controller
      */
     public function confirm(Order $order): JsonResponse
     {
-        $this->authorize('confirm', $order);
 
         try {
             $order = $this->orderService->confirmOrder($order);
@@ -130,7 +126,6 @@ class OrderController extends Controller
      */
     public function cancel(Request $request, Order $order): JsonResponse
     {
-        $this->authorize('cancel', $order);
 
         try {
             $order = $this->orderService->cancelOrder($order, $request->reason);
@@ -151,9 +146,8 @@ class OrderController extends Controller
     /**
      * Process refund for the order.
      */
-        public function refund(RefundOrderRequest $request, Order $order): JsonResponse
+    public function refund(RefundOrderRequest $request, Order $order): JsonResponse
     {
-        $this->authorize('refund', $order);
 
         try {
             $validated = $request->validated();

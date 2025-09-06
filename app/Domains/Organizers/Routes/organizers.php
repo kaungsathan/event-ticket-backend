@@ -14,20 +14,8 @@ use App\Domains\Organizers\Controllers\OrganizerController;
 |
 */
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    // Standard CRUD routes for organizers
-    // Route::apiResource('organizers', OrganizerController::class);
-
-    Route::get('organizers', [OrganizerController::class, 'index'])->middleware('permission:view-organizers');
-    Route::post('organizers', [OrganizerController::class, 'store'])->middleware('permission:create-organizers');
-    Route::get('organizers/{id}', [OrganizerController::class, 'show'])->middleware('permission:view-organizers');
-    Route::post('organizers/{id}/update', [OrganizerController::class, 'update'])->middleware('permission:edit-organizers');
-    Route::delete('organizers/{id}', [OrganizerController::class, 'destroy'])->middleware('permission:delete-organizers');
-
-    // Additional organizer-specific actions
-    Route::patch('organizers/{organizer}/verify', [OrganizerController::class, 'toggleVerification'])
-        ->name('organizers.toggle-verification');
-
-    Route::patch('organizers/{organizer}/status', [OrganizerController::class, 'toggleStatus'])
-        ->name('organizers.toggle-status');
-});
+Route::get('organizers', [OrganizerController::class, 'index']);
+Route::post('organizers', [OrganizerController::class, 'store'])->middleware('auth:sanctum');
+Route::get('organizers/{id}', [OrganizerController::class, 'show']);
+Route::post('organizers/{id}/update', [OrganizerController::class, 'update'])->middleware('auth:sanctum');
+Route::delete('organizers/{id}', [OrganizerController::class, 'destroy'])->middleware('auth:sanctum');
