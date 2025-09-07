@@ -33,6 +33,8 @@ class AttributeController extends Controller
             $query = $model::query();
         }
 
+        $query->orderBy('created_at', 'desc');
+
 
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 

@@ -29,7 +29,21 @@ class OrderService
     {
         $page = $request->get('page');
         $perPage = $request->get('per_page');
+        $search = $request->get('search');
+        $status = $request->get('status');
         $query = Order::query();
+
+        if ($search) {
+            $query->where('customer_name', 'like', "%{$search}%")
+                ->orWhere('customer_email', 'like', "%{$search}%")
+                ->orWhere('customer_phone', 'like', "%{$search}%");
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $query->orderBy('created_at', 'desc');
 
         return $query->paginate($perPage, ['*'], 'page', $page);
 
